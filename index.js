@@ -1,5 +1,5 @@
 const COHORT = "Joy-2408";
-const API_URL = `https://fsa-crud-2aa9294fe819.herokuapp.com/api${COHORT}/events/`;
+const API_URL = `https://fsa-crud-2aa9294fe819.herokuapp.com/api${COHORT}/events`;
 
 // === State ===
 let events = [];
@@ -9,7 +9,7 @@ async function getEvents() {
   try {
     const response = await fetch(API_URL);
     const responseObj = await response.json();
-    // debuuger;
+    // debugger;
     events = responseObj.data;
   } catch (error) {
     console.error(error);
@@ -18,12 +18,12 @@ async function getEvents() {
 
 // Request API to create a new event
 
-async function addEvent(event) {
+async function addEvent(newEvent) {
   try {
     const response = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(recipe),
+      body: JSON.stringify(event),
     });
 
     if (!response.ok) {
@@ -53,26 +53,55 @@ async function deleteEvent(id) {
 // Render
 
 function renderEvents() {
-  
+  console.log(events);
   const $events = events.map((event) => {
-  const $li = document.createElement("li");
-  $li.innerHTML = `
-    <h2>${event.name}</h2>
-    <h3>${event.date}</h3>
-    <h4>${event.location}
-    <p>${event.description}
-    <button<Delete</button>
+    const $li = document.createElement("li");
+    $li.innerHTML = `
+    <h2>${event.name}</p>
+    <p>${event.date}</p>
+    <p>${event.location} </p>
+    <p>${event.time} </p>
+    <p>${event.description} </p>
+    <button>Delete</button>
     `;
 
-  const $button = $li.querySelector("button");
-  $button.addEventListener("click", async () => {
-    await deleteEvent(event.id);
-    await getEvents();
-    renderEvents();
+    const $button = $li.querySelector("button");
+    $button.addEventListener("click", async () => {
+      await deleteEvent(event.id);
+      await getEvents();
+      renderEvents();
+    });
+
+    return $li;
   });
 
-  return $li;
-});
+  const $ul = document.querySelector("ul");
+  $ul.replaceChildren(...$events);
+}
 
 //  Script
-const date = new Date($form.date.value).toISOString();
+
+async function init() {
+  await getEvents();
+  renderEvents();
+}
+
+init();
+
+//  Add event with form data when form is submitted
+const $form = document.querySelector("form");
+$form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const newEvent = {
+    name: $form.title.value,
+    date: $form.date.value,
+    location: $form.location.value,
+    time: $form.eventTime.value,
+    details: $form.details.value,
+  };
+
+  await addEvent(newEvent);
+  await getEvents();
+  renderEvents();
+});
