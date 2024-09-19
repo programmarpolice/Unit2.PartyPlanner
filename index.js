@@ -1,5 +1,5 @@
 const COHORT = "Joy-2408";
-const API_URL = `https://fsa-crud-2aa9294fe819.herokuapp.com/api${COHORT}/events`;
+const API_URL = `https://fsa-crud-2aa9294fe819.herokuapp.com/api/${COHORT}/events/`;
 
 // === State ===
 let events = [];
@@ -18,7 +18,7 @@ async function getEvents() {
 
 // Request API to create a new event
 
-async function addEvent(newEvent) {
+async function addEvent(event) {
   try {
     const response = await fetch(API_URL, {
       method: "POST",
@@ -57,11 +57,10 @@ function renderEvents() {
   const $events = events.map((event) => {
     const $li = document.createElement("li");
     $li.innerHTML = `
-    <h2>${event.name}</p>
-    <p>${event.date}</p>
-    <p>${event.location} </p>
-    <p>${event.time} </p>
-    <p>${event.description} </p>
+    <h2>Name: ${event.name}</p>
+    <p>Date: ${event.date}</p>
+    <p>Location: ${event.location} </p>
+    <p>Details: ${event.description} </p>
     <button>Delete</button>
     `;
 
@@ -97,7 +96,6 @@ $form.addEventListener("submit", async (event) => {
     name: $form.title.value,
     date: $form.date.value,
     location: $form.location.value,
-    time: $form.eventTime.value,
     details: $form.details.value,
   };
 
